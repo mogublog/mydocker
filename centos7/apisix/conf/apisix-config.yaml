@@ -1,0 +1,10 @@
+apisix:
+  admin_key:
+    - name: admin
+      key: "${{APISIX_ADMIN_KEY}}"
+      role: admin
+
+etcd:
+  host: ["http://${{ETCD_HOST}}:${{ETCD_PORT}}"]
+  prefix: "/apisix"
+  timeout: 1
