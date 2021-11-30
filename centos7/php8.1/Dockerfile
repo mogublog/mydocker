@@ -33,13 +33,14 @@ RUN export VERSION=8.1.0 \
   && make install
 
 RUN cd /usr/local/php && strip bin/php && strip bin/php-cgi && strip bin/phpdbg && strip sbin/php-fpm && strip lib/libphp.so
-RUN cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf && cp php-fpm.d/www.conf.default php-fpm.d/www.conf \
-  && cp /usr/local/php-*/php.ini-production /usr/local/php/lib/php.ini && cp /usr/local/php/lib/libphp.so /usr/lib/
+RUN cd /usr/local/php/etc && cp php-fpm.conf.default php-fpm.conf && cp php-fpm.d/www.conf.default php-fpm.d/www.conf
+RUN cp /usr/local/php-*/php.ini-production /usr/local/php/lib/php.ini
+RUN mkdir /usr/local-build
+RUN cp -r /usr/local/php /usr/local-build/
+RUN cp -r /usr/local/lib /usr/local-build/
 
 FROM centos:centos7.9.2009
 WORKDIR /usr/local/
 RUN yum install -y autoconf automake openssl curl libxml2 libpng libjpeg readline freetype zlib libicu && yum clean all
-COPY --from=build /usr/local/php php
-COPY --from=build /usr/local/lib lib
-COPY --from=build /usr/lib/libphp.so /usr/lib/libphp.so
+COPY --from=build /usr/local-build /usr/local
 ENV PATH /usr/local/php/bin/:/usr/local/php/sbin/:$PATH
